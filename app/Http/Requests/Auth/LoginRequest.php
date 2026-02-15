@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
@@ -29,18 +27,5 @@ class LoginRequest extends FormRequest
             'email' => ['required', 'email', 'string'],
             'password' => ['required', 'string', Password::default()],
         ];
-    }
-
-    public function authenticate(): User
-    {
-        $credentials = $this->validated();
-
-        if (! Auth::validate($credentials)) {
-            throw ValidationException::withMessages([
-                'message' => __('auth.failed'),
-            ]);
-        }
-
-        return User::where('email', $this->email)->first();
     }
 }

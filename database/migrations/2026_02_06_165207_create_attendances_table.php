@@ -20,6 +20,8 @@ return new class extends Migration
             $table->enum('status', AttendanceStatus::values());
             $table->foreignId('student_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
+
+            $table->unique(['student_id', 'date']);
         });
     }
 

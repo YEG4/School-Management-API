@@ -3,44 +3,33 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Models\User;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+    public function __construct(protected AuthService $authService) {}
+
     public function store(RegisterRequest $request)
     {
-        $validated = $request->validated();
+        $data = $this->authService->createUser($request->validated());
 
-        $user = User::create($validated);
-        $token = $user->createToken('web')->plainTextToken;
-
-        return [
-            'user' => $user,
-            'token' => $token,
-        ];
+        return $this->success($data, 'User created successfully.', 201);
     }
 
     public function login(LoginRequest $request)
     {
-        $user = $request->authenticate();
+        $data = $this->authService->authenticate($request->validated());
 
-        $user->tokens()->delete();
-
-        return response()->json([
-            'token' => $user->createToken('main')->plainTextToken,
-        ]);
-
+        return $this->success($data, 'User logged in successfully.');
     }
 
     public function logout(Request $request)
     {
-        $user = $request->user();
+        $this->authService->logUserOut($request->user());
 
-        $user->currentAccessToken()->delete();
-
-        return response()->noContent();
+        return $this->success(message: 'Successfully logged out.');
     }
 }
