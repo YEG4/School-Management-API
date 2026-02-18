@@ -20,6 +20,12 @@ class DatabaseSeeder extends Seeder
         $students = User::factory(10)->create();
         $courses = Course::factory(10)->create();
 
+        $student = User::factory()->create([
+            'email' => 'ib_student@gmail.com',
+            'name' => 'ib_student',
+            'password' => Hash::make('password1@#'),
+        ]);
+
         $admin = User::factory()->admin()->create([
             'email' => 'ib_admin@gmail.com',
             'name' => 'ib_admin',

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\Admin\UserResource;
 use App\Models\User;
 use App\Repositories\Eloquent\EloquentUserRepository;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -28,7 +29,7 @@ class AuthService
         }
 
         return [
-            'user' => $user->toResource(),
+            'user' => $user->toResource(UserResource::class),
             'token' => $user->createToken('api_token')->plainTextToken,
         ];
     }
@@ -39,7 +40,7 @@ class AuthService
         $token = $user->createToken('api_token')->plainTextToken;
 
         return [
-            'user' => $user->toResource(),
+            'user' => $user->toResource(UserResource::class),
             'token' => $token,
         ];
     }
